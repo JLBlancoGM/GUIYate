@@ -60,4 +60,8 @@ target/
 .idea/
 
 #Test
-gui/src/pid
+gui/src/test.py
+
+#Pid
+gui/src/pid_sip
+gui/src/pid_dhcpd

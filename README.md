@@ -41,7 +41,24 @@ Pre-requisites:
    Configure and make: ./configure
                         make
 
-4)Database:
+4) dhcp-server
+   Create dhcp-server in /opt
+   Give permissions to user: sudo <user>:<user> /opt/dhcp-server 
+   Download dhcp-server: https://www.isc.org/downloads/
+   Descompress:sudo tar -xzvf dhcp-4.2.8.tar.gz
+   Go to dhcp source code: cd dhcp-4.2.8
+   Configure with install dir:./confugure --prefix=/opt/dhcp-server
+   Make: make
+   Install: make install
+   Go to dhcp-server directory and make db directory: mkdir db
+   Create in db the dhcpd.leases file: cd db
+                                       touch dhcpd.leases
+   Create and edit dhcpd.conf in etc directory.
+   Run:
+	./dhcpd -cf ../etc/dhcpd.conf -lf ../db/dhcpd.less
+
+
+5)Database:
    Configure database:
         - root pass: rootdatabase
    Create database:

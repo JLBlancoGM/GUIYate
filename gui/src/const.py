@@ -24,3 +24,4 @@ RESET_TABLE = (
 )
 
 YATE = '/home/jose/Proyectos/TelefonicaVoIP/SIPUA/trunk'
+DHCP = '/opt/dhcp-server'

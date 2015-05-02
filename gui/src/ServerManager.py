@@ -19,28 +19,36 @@ class ServerManager(object):
         self.is_start = False
         self.pid = None
         self.start_time = 0
+        self.yate = os.path.isfile(const.YATE+'/run')
         self.get_pid()
 
     def get_pid(self):
+        if not self.yate:
+            logging.error('The yate sip server is not installed')
+            return 'Error, yate sip server is not installed', 1
         try:
             self.pid = sub.check_output(['pidof', 'yate'])
         except sub.CalledProcessError, err:
             self.pid = None
             self.is_start = False
             logging.info(err)
-            return 'Error to get pid', 1
+            return 'Error to get pid', 0
         if self.pid:
             self.is_start = True
-            return 0
+            return 'Ok, yate pit = ' + self.pid, 0
         else:
             self.is_start = False
-            return 0
+            return 'Ok, yate pit = None ', 0
 
     def run(self, timeout=0.1):
+        if not self.yate:
+            logging.error('The yate sip server is not installed')
+            return 'Error, yate sip server is not installed', 1
         self.get_pid()
         if not self.is_start:
             try:
-                sub.Popen(['./run', '-d'], cwd=const.YATE)
+                sub_popen = sub.Popen(['./run', '-d'], cwd=const.YATE)
+                sub_popen.wait()
             except OSError, err:
                 logging.error('Error, ' + str(err))
                 return 'Error', 1
@@ -60,6 +68,9 @@ class ServerManager(object):
             return 'Server running', 0
 
     def stop(self):
+        if not self.yate:
+            logging.error('The yate sip server is not installed')
+            return 'Error, yate sip server is not installed', 1
         self.get_pid()
         if self.is_start:
             try:
@@ -80,6 +91,9 @@ class ServerManager(object):
             return 'Ok', 0
 
     def get_status(self):
+        if not self.yate:
+            logging.error('The yate sip server is not installed')
+            return 'Error, yate sip server is not installed', 1
         now = time.time()
         if self.is_start:
             time_use = now - self.start_time
@@ -88,6 +102,9 @@ class ServerManager(object):
         return self.is_start, time_use
 
     def restart(self):
+        if not self.yate:
+            logging.error('The yate sip server is not installed')
+            return 'Error, yate sip server is not installed', 1
         ret_stop = self.stop()
         ret_start = self.run()
         return ret_stop, ret_start
