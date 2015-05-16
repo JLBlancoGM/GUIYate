@@ -73,7 +73,7 @@ class DHCPServer(object):
                     logging.error('Error to start dhcp server (timeout)')
                     return 'Error timeout', 1
             logging.info('Ok, the dhcp server is now running')
-            with open('pid_dhcp', 'w') as f:
+            with open(const.PID_DHCP_FILE, 'w') as f:
                 f.write(self.pid)
             return 'Server running', 0
         else:
@@ -95,7 +95,7 @@ class DHCPServer(object):
             self.is_start = False
             logging.info('Ok, dhcp server stoped')
             try:
-                os.remove('pid')
+                os.remove(const.PID_DHCP_FILE)
             except OSError, err:
                 logging.error(err)
             return 'Ok, dhcp server stoped', 0

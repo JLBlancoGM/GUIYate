@@ -16,6 +16,7 @@ from logConfig import *
 
 init_logger(const.LOG_FILE)
 
+
 class UserManager(object):
 
     def __init__(self, hostdb, userdb, passdb, namedb):

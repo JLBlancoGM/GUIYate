@@ -13,6 +13,10 @@ import time
 import os
 import subprocess as sub
 
+from logConfig import *
+
+init_logger(const.LOG_FILE)
+
 
 class ServerManager(object):
     def __init__(self):
@@ -60,7 +64,7 @@ class ServerManager(object):
                     logging.error('Error to start server (timeout)')
                     return 'Error timeout', 1
             logging.info('Ok, the server is now running')
-            with open('pid', 'w') as f:
+            with open(const.PID_SIP_FILE, 'w') as f:
                 f.write(self.pid)
             return 'Server running', 0
         else:
@@ -82,7 +86,7 @@ class ServerManager(object):
             self.is_start = False
             logging.info('Ok, server stoped')
             try:
-                os.remove('pid')
+                os.remove(const.PID_SIP_FILE)
             except OSError, err:
                 logging.error(err)
             return 'Ok, server stoped', 0
