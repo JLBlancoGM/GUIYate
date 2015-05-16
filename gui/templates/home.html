@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NOGY</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
+<meta http-equiv="content-style-type" content="text/css">
+<meta http-equiv="expires" content="0">
+</head>
+<body>
+<form action="." method="POST" id="form1" name="form1">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <table border="1">
+                <tr>
+                    <td><h3>Servidor</h3></td>
+                    <td><h3>Estado</h3></td>
+                </tr>
+                <tr>
+                    <td>SIP</td>
+                    <td>{{ sip_server }}</td>
+                    <td><input type="submit" name="{{ sip_button }}" id="start_sip" value="{{ sip_server_button }}"></td>
+                </tr>
+                <tr>
+                    <td>DHCP</td>
+                    <td>{{ dhcp_server }}</td>
+                    <td><input type="submit" name="{{ dhcp_button }}" id="start_dhcp" value="{{ dhcp_server_button }}"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+            </table>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        <td></td>
+        </tr>
+    </table>
+    <hr>
+    <table border="1">
+        <tr>
+            <td>
+                <h3>Usuarios</h3>
+            </td>
+            <td>
+                <h3>Estado</h3>
+            </td>
+            {% for user in users %}
+            <tr>
+                <td>
+                    {{ user.0 }}
+                </td>
+                <td>
+                    {% if user.1 = None %}
+                        Unregistered
+                    {% elif user.1 = 1 %}
+                        Registered
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tr>
+    </table>
+    <br>
+    <table>
+        <tr>
+            <td>
+            <select name="users_list" id="users_list" onchange="change_user()">
+                <option value="0">-</option>
+                {% for user in users %}
+                    {% if user.1 = 1 %}
+                        <option value="{{ user.0 }}1">{{ user.0 }}</option>
+                    {% else %}
+                        <option value="{{ user.0 }}0">{{ user.0 }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            </td>
+            <td>
+            <input type="submit" name="del_user" id="del_user" value="Remove User">
+            <input type="submit" name="unregister_user" id="unregister_user" value="Unregister User">
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    window.onload = function loadwin()
+    {
+        {% if sip_error %}
+            alert("{{ sip_error }}");
+        {% elif dhcp_error %}
+            alert("{{ dhcp_error }}");
+        {% endif %}
+    };
+
+    function change_user()
+    {
+        element = document.getElementById('users_list');
+        name = element.value;
+        alert(name);
+        if (name.substr(name.length-1,1) == 1)
+        {
+             document.getElementById("unregister_user").disabled = false;
+        }
+        else
+        {
+            document.getElementById("unregister_user").disabled = true;
+        }
+    }
+</script>
+</body>
+</html>
