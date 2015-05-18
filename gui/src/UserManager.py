@@ -19,8 +19,9 @@ init_logger(const.LOG_FILE)
 
 class UserManager(object):
 
-    def __init__(self, hostdb, userdb, passdb, namedb):
-        self.valuesdb = [hostdb, userdb, passdb, namedb]
+    def __init__(self, database=const.DATABASE):
+        self.valuesdb = database
+        self.table_ok = False
         try:
             self.connectiondb = db.connect(*self.valuesdb)
         except db.OperationalError, err:

@@ -10,6 +10,9 @@ SUMARY:
 
 LOG_FILE = '..'
 
+#Data base data
+DATABASE = ['localhost', 'root', 'radio88', 'yate']
+
 #Data base methods
 USERS_TABLE = (
     "CREATE TABLE users ("

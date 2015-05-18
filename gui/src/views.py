@@ -91,9 +91,9 @@ def stop_server(server):
 
 def update_users():
     dictionary = {}
-    users = UserManager('localhost', 'root', 'radio88', 'yate')
+    users = UserManager()
     if not users.table_ok:
-        return 1
+        return dictionary, 1
     else:
         dictionary['users'] = users.list_users()
         return dictionary, 0
