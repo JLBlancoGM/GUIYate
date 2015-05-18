@@ -43,8 +43,8 @@ PID_DHCP_FILE = 'pid_dhcp'
 
 
 #Default config lists
-SIP_CONF_LIST =[('type', 'UDP'), ('port', '5060'), ('useragent', 'SIPLAB'),
-                ('info', 1), ('progres', 'disable'), ]
+SIP_CONF_LIST = [[('[general]', ''), ('type', 'UDP'), ('port', '5060'), ('useragent', 'SIPLAB'),
+                 ('info', 'enable'), ], ]
 
 DHCP_CONF_LIST = [('option domain-name', '"sheol.org"'),
                   ('option domain-name-servers', ['ns1.example.org', 'ns2.example.org']),

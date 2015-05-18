@@ -12,6 +12,7 @@ from ServerManager import ServerManager
 from UserManager import UserManager
 from CallToServer import CallToServer
 from ConfigureDHCP import ConfigureDHCP
+from ConfigureSIP import ConfigureSIP
 import const
 import time
 from checkServers import checkserver
@@ -44,6 +45,11 @@ def main3():
 def main4():
     print checkserver()
 
+def main4():
+    sip_conf_list = const.SIP_CONF_LIST
+    sip_conf = ConfigureSIP()
+    sip_conf.set_conf(sip_conf_list)
+
 
 if __name__ == '__main__':
-    main3()
+    main4()
