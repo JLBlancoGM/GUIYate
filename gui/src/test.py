@@ -33,13 +33,14 @@ def main2():
     dhcp = DHCPServer()
     dhcp.run()
 
+
 def main3():
     dhcp_list_conf = const.DHCP_CONF_LIST
     dhcp_conf = ConfigureDHCP()
-    #dhcp_conf.set_conf(dhcp_list_conf)
-    conf = dhcp_conf.get_conf()
-    dhcp_conf.set_conf(conf)
-    print conf
+    dhcp_conf.set_conf(dhcp_list_conf)
+    #conf = dhcp_conf.get_conf()
+    #dhcp_conf.set_conf(conf)
+    #print conf
 
 
 def main4():
@@ -52,4 +53,4 @@ def main4():
 
 
 if __name__ == '__main__':
-    main4()
+    main3()

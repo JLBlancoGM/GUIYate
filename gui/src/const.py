@@ -34,7 +34,7 @@ SIP_FILE_CONF = YATE+'/conf.d/ysipchan.conf'
 
 #DHCP servers location
 DHCP = '/opt/dhcp-server'
-DHCP_FILE_CONF = DHCP + '/etc/dhcp.conf'
+DHCP_FILE_CONF = DHCP + '/etc/dhcpd.conf'
 
 #NTP servers location
 NTP = '/opt/ntp-server'
@@ -49,9 +49,9 @@ PID_DHCP_FILE = 'pid_dhcp'
 SIP_CONF_LIST = [[('[general]', ''), ('type', 'UDP'), ('port', '5060'), ('useragent', 'SIPLAB'),
                  ('info', 'enable'), ], ]
 
-DHCP_CONF_LIST = [('option domain-name', '"sheol.org"'),
+DHCP_CONF_LIST = [('option domain-name', '"sheol.org"'), ('DHCPDARGS', 'wlan0'),
                   ('option domain-name-servers', ['ns1.example.org', 'ns2.example.org']),
                   ('default-lease-time', '600'), ('max-lease-time', '7200'),
-                  ('subnet', '10.5.5.0'), ('netmask', '255.255.255.224'),
-                  ('range', '10.5.5.26'), ('range_end', '10.5.5.30'),
-                  ('option routers', '10.5.5.1')]
+                  ('subnet', '192.168.34.0'), ('netmask', '255.255.255.0'),
+                  ('range', '192.168.34.10'), ('range_end', '192.168.34.20'),
+                  ('option routers', '192.168.34.1')]

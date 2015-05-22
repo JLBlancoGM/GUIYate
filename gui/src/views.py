@@ -15,83 +15,107 @@ from ServerManager import ServerManager
 from DHCPServer import DHCPServer
 from UserManager import UserManager
 
+import os
+
+
 def home(request):
     dicToResponse = {}
-    update_users()
-    dicToResponse.update(update_state())
-    dicToResponse.update(update_users()[0])
+    if not check_root():
+        dicToResponse['no_root'] = True
+        dicToResponse.update(update_state('dhcp', False))
+        dicToResponse.update(update_state('sip', False))
+        return render_to_response('home.html', dicToResponse,
+                                  context_instance=RequestContext(request))
+    dhcp = DHCPServer()
+    sip = ServerManager()
+    usersdb = UserManager()
+    dicToResponse.update(update_state('dhcp', dhcp.is_start))
+    dicToResponse.update(update_state('sip', sip.is_start))
+    dicToResponse.update(update_users(usersdb)[0])
     if request.method == 'POST':
         if 'start_sip' in request.POST:
-            runserver = run_server('sip')
-            if runserver[1]:
-                dicToResponse['sip_error'] = runserver[0]
-            dicToResponse.update(update_state())
+            runserver = run_server(sip)
+            if runserver[1] == 0:
+                dicToResponse.update(update_state('sip', True))
+            else:
+                dicToResponse.update(update_state('sip', False))
         elif 'stop_sip' in request.POST:
-            stop_server('sip')
-            dicToResponse.update(update_state())
+            stopserver = stop_server(sip)
+            if stopserver[1] == 0:
+                dicToResponse.update(update_state('sip', False))
+            else:
+                dicToResponse.update(update_state('sip', True))
         if 'start_dhcp' in request.POST:
-            runserver = run_server('dhcp')
-            if runserver[1]:
-                dicToResponse['dhcp_error'] = runserver[0]
-            dicToResponse.update(update_state())
+            runserver = run_server(dhcp)
+            if runserver[1] == 0:
+                dicToResponse.update(update_state('dhcp', True))
+            else:
+                dicToResponse.update(update_state('dhcp', False))
         elif 'stop_dhcp' in request.POST:
-            stop_server('dhcp')
+            stopserver = stop_server(dhcp)
+            if stopserver[1] == 0:
+                dicToResponse.update(update_state('dhcp', False))
+            else:
+                dicToResponse.update(update_state('dhcp', True))
+        if 'add_user' in request.POST:
+            if usersdb.connect and usersdb.table_ok:
+                name = request.POST.get('user_name')
+                passw = request.POST.get('user_pass')
+                data_base_msg = usersdb.add_user(name, passw)
+                if data_base_msg[0] == 0:
+                    dicToResponse.update(update_users(usersdb)[0])
+                else:
+                    dicToResponse["add_user_fault"] = data_base_msg[1]
+            else:
+                    dicToResponse["add_user_fault"] = 'Database connection refused, read log file'
+        if 'del_user' in request.POST:
+            if usersdb.connect and usersdb.table_ok:
+                name = request.POST.get('actual_user')
+                print "[TRAZA] del user", usersdb.del_user(name)
+                dicToResponse.update(update_users(usersdb)[0])
     return render_to_response('home.html', dicToResponse,
                               context_instance=RequestContext(request))
 
+def check_root():
+    id = os.getuid()
+    if id == 0:
+        return True
+    else:
+        return False
 
-def update_state():
+def update_state(server, state):
     dictionary = {}
-    sip_server = ServerManager()
-    dhcp_server = DHCPServer()
-    if sip_server.is_start:
-        dictionary['sip_server'] = 'Running'
-        dictionary['sip_server_button'] = 'Stop'
-        dictionary['sip_button'] = 'stop_sip'
-    else:
-        dictionary['sip_server'] = 'Stop'
-        dictionary['sip_server_button'] = 'Start'
-        dictionary['sip_button'] = 'start_sip'
-    if dhcp_server.is_start:
-        dictionary['dhcp_server'] = 'Running'
-        dictionary['dhcp_server_button'] = 'Stop'
-        dictionary['dhcp_button'] = 'stop_dhcp'
-    else:
-        dictionary['dhcp_server'] = 'Stop'
-        dictionary['dhcp_server_button'] = 'Start'
-        dictionary['dhcp_button'] = 'start_dhcp'
+    if server == 'sip':
+        if state:
+            dictionary['sip_server'] = 'Running'
+            dictionary['sip_server_button'] = 'Stop'
+            dictionary['sip_button'] = 'stop_sip'
+        else:
+            dictionary['sip_server'] = 'Stop'
+            dictionary['sip_server_button'] = 'Start'
+            dictionary['sip_button'] = 'start_sip'
+    if server == 'dhcp':
+        if state:
+            dictionary['dhcp_server'] = 'Running'
+            dictionary['dhcp_server_button'] = 'Stop'
+            dictionary['dhcp_button'] = 'stop_dhcp'
+        else:
+            dictionary['dhcp_server'] = 'Stop'
+            dictionary['dhcp_server_button'] = 'Start'
+            dictionary['dhcp_button'] = 'start_dhcp'
     return dictionary
 
 
 def run_server(server):
-    if server == 'sip':
-        sip_server = ServerManager()
-        start_sip = sip_server.run(0.5)
-        if start_sip[1] == 0:
-            return 'Server running', 0
-        else:
-            return 'Failure to run server. '+start_sip[0], 1
-    if server == 'dhcp':
-        dhcp_server = DHCPServer()
-        start_dhcp = dhcp_server.run(0.5)
-        if start_dhcp[1] == 0:
-            return 'Server running', 0
-        else:
-            return 'Failure to run server.'+start_dhcp[0], 1
+    return server.run(0.5)
 
 
 def stop_server(server):
-    if server == 'sip':
-        sip_server = ServerManager()
-        if sip_server.stop()[1] == 0:
-            return 'Server stopping'
-        else:
-            return 'Failure to stop server'
+    return server.stop()
 
 
-def update_users():
+def update_users(users):
     dictionary = {}
-    users = UserManager()
     if not users.table_ok:
         return dictionary, 1
     else:

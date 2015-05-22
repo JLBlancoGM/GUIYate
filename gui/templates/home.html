@@ -59,6 +59,12 @@
                         Registered
                     {% endif %}
                 </td>
+                <td>
+                    {{ user.2 }}
+                </td>
+                <td>
+                    {{ user.3 }}
+                </td>
             </tr>
             {% endfor %}
         </tr>
@@ -73,7 +79,7 @@
                     {% if user.1 = 1 %}
                         <option value="{{ user.0 }}1">{{ user.0 }}</option>
                     {% else %}
-                        <option value="{{ user.0 }}0">{{ user.0 }}</option>
+                        <option value="{{ user.0 }}2">{{ user.0 }}</option>
                     {% endif %}
                 {% endfor %}
             </select>
@@ -84,14 +90,36 @@
             </td>
         </tr>
     </table>
+<hr>
+<br>
+<table>
+    <tr>
+        <td>User name:<input type="text" name="user_name" id="user_name"></td>
+        <td>Password:<input type="text" name="user_pass" id="user_pass"></td>
+        <td>Expire time:<input type="text" name="user_exp" id="user_exp"></td>
+        <td><input type="submit" name="add_user" id="add_user" value="Add user"></td>
+    </tr>
+
+</table>
+<input type="text" name="actual_user" id="actual_user" hidden>
 </form>
-<script>
+
+
+<script type="text/javascript">
     window.onload = function loadwin()
     {
+        document.getElementById("unregister_user").disabled = true;
+        document.getElementById("del_user").disabled = true;
         {% if sip_error %}
             alert("{{ sip_error }}");
         {% elif dhcp_error %}
             alert("{{ dhcp_error }}");
+        {% endif %}
+        {% if no_root %}
+            alert('No root privileges');
+        {% endif %}
+        {% if add_user_fault %}
+            alert({{ add_user_fault }});
         {% endif %}
     };
 
@@ -99,8 +127,17 @@
     {
         element = document.getElementById('users_list');
         name = element.value;
-        alert(name);
-        if (name.substr(name.length-1,1) == 1)
+        document.getElementById("actual_user").value = name.substr(0,name.length-1);
+        if (document.getElementById('users_list').selectedIndex == '0')
+        {
+            document.getElementById("unregister_user").disabled = true;
+            document.getElementById("del_user").disabled = true;
+        }
+        else
+        {
+            document.getElementById("del_user").disabled = false;
+        }
+        if (name.substr(name.length-1,1) == 2)
         {
              document.getElementById("unregister_user").disabled = false;
         }

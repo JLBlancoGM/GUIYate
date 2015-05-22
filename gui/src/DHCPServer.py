@@ -59,7 +59,7 @@ class DHCPServer(object):
         if not self.is_start:
             try:
                 dhcpd = [const.DHCP+'/sbin/dhcpd', '-cf', '../etc/dhcpd.conf',
-                         '-lf', '../db/dhcpd.leases', '-d']
+                         '-lf', '../db/dhcpd.leases']
                 subPopen = sub.Popen(dhcpd, cwd=const.DHCP+'/sbin/')
                 subPopen.wait()
             except OSError, err:
@@ -91,9 +91,9 @@ class DHCPServer(object):
             except IOError:
                 logging.error('Error to stop dhcp server')
                 return 'Error to stop server', 1
+            logging.info('Ok, dhcp server stoped')
             self.pid = None
             self.is_start = False
-            logging.info('Ok, dhcp server stoped')
             try:
                 os.remove(const.PID_DHCP_FILE)
             except OSError, err:

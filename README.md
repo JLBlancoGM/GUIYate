@@ -30,6 +30,10 @@ Pre-requisites:
    apt-get install mysql-workbench
    apt-get install python-mysqldb
 
+4) Django:
+   install pip: apt-get install python-pip
+   install django: pip install django
+   install python-mysql: pat-get install python-mysqldb
 
 
 3) Yate - Yet Another Telephony Engine (YATE)

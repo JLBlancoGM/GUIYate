@@ -44,7 +44,7 @@ class ServerManager(object):
             self.is_start = False
             return 'Ok, yate pit = None ', 0
 
-    def run(self, timeout=0.1):
+    def run(self, timeout=0.5):
         if not self.yate:
             logging.error('The yate sip server is not installed')
             return 'Error, yate sip server is not installed', 1

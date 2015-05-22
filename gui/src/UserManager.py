@@ -22,15 +22,16 @@ class UserManager(object):
     def __init__(self, database=const.DATABASE):
         self.valuesdb = database
         self.table_ok = False
+        self.connect = False
         try:
             self.connectiondb = db.connect(*self.valuesdb)
         except db.OperationalError, err:
             msg_err = 'Connection refused ' + str(err)
             logging.error(msg_err)
-            self.connect = False
         else:
             logging.info('Connection established')
             self.cursor = self.connectiondb.cursor()
+            self.connect = True
             try:
                 self.cursor.execute(const.USERS_TABLE)
             except db.OperationalError, err:
@@ -54,7 +55,7 @@ class UserManager(object):
             logging.error('Error '+str(err))
 
     def add_user(self, name, password):
-        values = "'" + name + "'" + " ," + "'" + password + "'," + " 1, NULL, NOW(), 'NULL')"
+        values = "'" + name + "'" + " ," + "'" + password + "'," + " 0, NULL, NOW(), 'NULL')"
         mysql_msg = ' INSERT INTO users VALUES (' + values
         try:
             self.cursor.execute(mysql_msg)
@@ -76,7 +77,7 @@ class UserManager(object):
         return rtn
 
     def list_users(self):
-        mysql_msg = "SELECT username, inuse, location FROM users"
+        mysql_msg = "SELECT username, inuse, location, expires FROM users"
         self.cursor.execute(mysql_msg)
         data = self.cursor.fetchall()
         return data

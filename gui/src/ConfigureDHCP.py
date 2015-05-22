@@ -68,6 +68,11 @@ class ConfigureDHCP(object):
                         line = '\t' + key[0] + ' ' + key[1]
                     elif key[0] == 'range_end':
                         line = ' ' + key[1] + ';\n'
+                    elif key[0] == 'DHCPDARGS':
+                        if key[1] == '':
+                            line = key[0] + '=eth0;\n'
+                        else:
+                            line = key[0] + '=' + key[1] + ';\n'
                     elif key[0] == 'option routers':
                         if not key[1] == '':
                             line = '\t' + key[0] + ' ' + key[1] + ';\n}'
