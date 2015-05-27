@@ -26,21 +26,18 @@ class ConfigureDHCP(object):
                 for ln in fl:
                     ln = ln.split(' ')
                     if ln[0] == 'subnet':
-                        line_conf1 = (ln[0], ln[1])
-                        line_conf2 = (ln[2], ln[3])
-                        configure.append(line_conf1)
+                        line_conf2 = (ln[0], ln[1])
+                        line_conf1 = (ln[2], ln[3])
                         configure.append(line_conf2)
                     elif ln[0] == '\trange':
-                        line_conf1 = ('range', ln[1])
-                        line_conf2 = ('range_end', ln[2].replace(';\n', ''))
-                        configure.append(line_conf1)
+                        line_conf2 = ('range', ln[1])
+                        line_conf1 = ('range_end', ln[2].replace(';\n', ''))
                         configure.append(line_conf2)
                     elif ln[0] == '\toption':
                         if not ln[2] == 'routers':
                             line_conf1 = (ln[0].replace('\t', '') + ' ' + ln[1], ln[2].replace(';\n', ''))
                         else:
                             line_conf1 = (ln[0].replace('\t', '') + ln[1], ln[2].replace(';\n', ''))
-                        configure.append(line_conf1)
                     elif ln[0] == 'option':
                         if ln[1] == 'domain-name':
                             line_conf1 = (ln[0] + ' ' + ln[1], ln[2].replace(';\n', ''))
@@ -48,10 +45,22 @@ class ConfigureDHCP(object):
                             dns_tmp = [var.replace(',', '') for var in ln[2:len(ln)]]
                             dns = [var.replace(';\n', '') for var in dns_tmp]
                             line_conf1 = (ln[0] + ' ' + ln[1], dns)
-                        configure.append(line_conf1)
-                    elif not (ln[0] == '}' or ln[0] == '}\n'):
-                        line_conf1 = (ln[0], ln[1].replace(';\n', ''))
-                        configure.append(line_conf1)
+                        elif ln[1] == 'ntp-servers':
+                            ntp_tmp = [var.replace(',', '') for var in ln[2:len(ln)]]
+                            ntp = [var.replace(';\n', '') for var in ntp_tmp]
+                            line_conf1 = (ln[0] + ' ' + ln[1], ntp)
+                        elif ln[1] == 'sip-servers':
+                            line_conf1 = (ln[0] + ' ' + ln[1], ln[3].replace(';\n', ''))
+                            print "[TRAZA] sip-servers", line_conf1
+                    elif 'DHCPDARGS' in ln[0]:
+                        values = ln[0].split('=')
+                        line_conf1 = (values[0], values[1].replace(';\n', ''))
+                    elif '}' in ln[0]:
+                        line_conf1 = ('end', ln[0].replace('};\n', ''))
+                    else:
+                        if len(ln) > 1:
+                            line_conf1 = (ln[0], ln[1].replace(';\n', ''))
+                    configure.append(line_conf1)
         except IOError:
             logging.error('Can not read the dhcp configuration file')
         return configure
@@ -76,6 +85,8 @@ class ConfigureDHCP(object):
                     elif key[0] == 'option routers':
                         if not key[1] == '':
                             line = '\t' + key[0] + ' ' + key[1] + ';\n}'
+                        else:
+                            line = "\n}"
                     elif key[0] == 'option domain-name-servers':
                         if not key[1] == '':
                             line = key[0] + ' '
@@ -87,6 +98,20 @@ class ConfigureDHCP(object):
                                 else:
                                     line = line + ', ' + dns
                             line = line + ';\n'
+                    elif key[0] == 'option ntp-servers':
+                        if not key[1] == '':
+                            line = key[0] + ' '
+                            first = True
+                            for ntp in key[1]:
+                                if first:
+                                    line = line + ntp
+                                    first = False
+                                else:
+                                    line = line + ', ' + ntp
+                            line = line + ';\n'
+                    elif key[0] == 'option sip-servers':
+                        if not key[1] == '':
+                            line = key[0] + ' 1 ' + key[1] + ';\n'
                     else:
                         line = key[0] + ' ' + key[1] + ';\n'
                     fl.write(line)

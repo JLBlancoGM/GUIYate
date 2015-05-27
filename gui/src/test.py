@@ -13,6 +13,7 @@ from UserManager import UserManager
 from CallToServer import CallToServer
 from ConfigureDHCP import ConfigureDHCP
 from ConfigureSIP import ConfigureSIP
+from NTPServer import NTPServer
 import const
 import time
 from checkServers import checkserver
@@ -49,8 +50,16 @@ def main4():
 def main4():
     sip_conf_list = const.SIP_CONF_LIST
     sip_conf = ConfigureSIP()
-    sip_conf.set_conf(sip_conf_list)
+    print " ", sip_conf.get_conf()
 
+def main5():
+    ntp = NTPServer()
+    ntp.stop()
+    ntp.run()
+    time.sleep(10)
+    ntp.restart()
+    time.sleep(6)
+    ntp.stop()
 
 if __name__ == '__main__':
-    main3()
+    main4()

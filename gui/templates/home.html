@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>NOGY</title>
+<title>SIPLAB</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
-<meta http-equiv="content-style-type" content="text/css">
-<meta http-equiv="expires" content="0">
 </head>
 <body>
 <form action="." method="POST" id="form1" name="form1">
@@ -28,7 +25,9 @@
                     <td><input type="submit" name="{{ dhcp_button }}" id="start_dhcp" value="{{ dhcp_server_button }}"></td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td>NTP</td>
+                    <td>{{ ntp_server }}</td>
+                    <td><input type="submit" name="{{ ntp_button }}" id="start_ntp" value="{{ ntp_server_button }}"></td>
                 </tr>
             </table>
         </tr>
@@ -110,10 +109,8 @@
     {
         document.getElementById("unregister_user").disabled = true;
         document.getElementById("del_user").disabled = true;
-        {% if sip_error %}
-            alert("{{ sip_error }}");
-        {% elif dhcp_error %}
-            alert("{{ dhcp_error }}");
+        {% if server_error %}
+            alert("{{ server_error }}");
         {% endif %}
         {% if no_root %}
             alert('No root privileges');
@@ -121,6 +118,7 @@
         {% if add_user_fault %}
             alert({{ add_user_fault }});
         {% endif %}
+
     };
 
     function change_user()

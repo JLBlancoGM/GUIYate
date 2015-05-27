@@ -35,17 +35,17 @@ class ConfigureSIP(object):
                             if len(msg) == 1:
                                 configure.append((msg[0], ''))
                             elif len(msg) > 1:
-                                configure.append((msg[0], msg[1]))
+                                configure.append((msg[0], msg[1].replace(' ', '')))
                     configuration.append(configure)
             except IOError:
                 logging.error('Can not read the sip configuration file')
         return configuration
 
     def set_conf(self, configuration):
-        for flconf, list_conf in zip(self.config_files, configuration):
+        for flconf in self.config_files:
                 try:
                     with open(flconf, 'w') as fl:
-                        for line in list_conf:
+                        for line in configuration:
                                 if '[' in line[0]:
                                     fl.write(line[0])
                                 else:

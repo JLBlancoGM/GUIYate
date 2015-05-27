@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>SIPLAB DHCP conf</title>
+</head>
+<body>
+<form action="." method="POST" id="form1" name="form1">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>Domain name:</td>
+            <td><input type="text" name="val_1" id="val_1" value="{{ domain_name }}"></td>
+        </tr>
+        <tr>
+            <td>Interfaces:</td>
+            <td><select name="interfaz" id="interfaz">
+                    {% for inter in interfaces %}
+                        <option value="{{ inter }}">{{ inter }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Domain name servers:</td>
+            <td><input type="text" name="val_3" id="val_3" value="{{ domain_name_servers }}"></td>
+        </tr>
+        <tr>
+            <td>NTP servers:</td>
+            <td><input type="text" name="val_4" id="val_4" value="{{ ntp_servers }}"></td></td>
+        </tr>
+        <tr>
+            <td>SIP servers:</td>
+            <td><input type="text" name="val_5" id="val_5" value="{{ sip_servers }}"></td></td>
+        </tr>
+        <tr>
+            <td>Default lease time:</td>
+            <td><input type="text" name="val_6" id="val_6" value="{{ default_lease_time }} "></td>
+        </tr>
+        <tr>
+            <td>Max lease time:</td>
+            <td><input type="text" name="val_7" id="val_7" value="{{ max_lease_time }}"> </td>
+        </tr>
+        <tr>
+            <td>Subnet:</td>
+            <td><input type="text" name="val_8" id="val_8" value="{{ subnet }}"></td>
+        </tr>
+        <tr>
+            <td>Netmask:</td>
+            <td><input type="text" name="val_9" id="val_9" value="{{ netmask }}"></td>
+        </tr>
+        <tr>
+            <td>Range:</td>
+            <td><input type="text" name="val_10" id="val_10" value="{{ range }}"> , <input type="text" name="val_11" id="val_11" value="{{ range_end }}"></td>
+        </tr>
+        <tr>
+            <td>Routers:</td>
+            <td><input type="text" name="val_12" id="val_12" value="{{ routers }}"></td>
+        </tr>
+        <tr>
+            <td><input type="button" name="apply" id="apply" value="Apply" onclick="app()"></td>
+        </tr>
+    </table>
+        <input type="text" name="val_2" id="val_2" hidden>
+</form>
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+
+    window.onload = function loadwin()
+    {
+        document.getElementById("interfaz").selectedIndex = {{ index }};
+    }
+    function app()
+    {
+        index = document.getElementById("interfaz").selectedIndex;
+        document.getElementById("val_2").value = index;
+        document.form1.submit();
+    }
+</script>

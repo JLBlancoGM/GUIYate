@@ -45,13 +45,12 @@ Pre-requisites:
    Configure and make: ./configure
                         make
 
-4) dhcp-server
+4) DHCP Server
    Create dhcp-server in /opt
-   Give permissions to user: sudo <user>:<user> /opt/dhcp-server 
    Download dhcp-server: https://www.isc.org/downloads/
    Descompress:sudo tar -xzvf dhcp-4.2.8.tar.gz
    Go to dhcp source code: cd dhcp-4.2.8
-   Configure with install dir:./confugure --prefix=/opt/dhcp-server
+   Configure:./configure --prefix=/opt/dhcp-server
    Make: make
    Install: make install
    Go to dhcp-server directory and make db directory: mkdir db
@@ -61,8 +60,17 @@ Pre-requisites:
    Run:
 	./dhcpd -cf ../etc/dhcpd.conf -lf ../db/dhcpd.less
 
+5)NTP Server
+   Create dhcp-server in /opt
+   Download ntp-server http://www.ntp.org/downloads.html
+   Descompress:sudo tar -xzvf ntp-4.2.8p2.tar.gz 
+   Go to ntp source code:cd ntp-4.2.8p2
+   Configure:sudo ./configure --prefix=/opt/ntp-serve
+   Make: make
+   Install: make install
 
-5)Database:
+
+6)Database:
    Configure database:
         - root pass: rootdatabase
    Create database:

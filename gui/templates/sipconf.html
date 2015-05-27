@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>SIPLAB</title>
+
+</head>
+<body>
+<form action="." method="POST" id="form1" name="form1">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>Listener type:</td>
+            <td>
+                <select name="listen_type" id="listen_type" onchange="change()">
+                    <option value="UDP">UDP</option>
+                    <option value="TCP">TCP</option>
+                </select>
+                <td><input type="text" name="var_1" id="var_1" value="{{ var_1 }}" hidden></td>
+            </td>
+        </tr>
+        <tr>
+            <td>Port:</td>
+            <td>
+                <input  name="var_2" id="var_2" value="{{ var_2 }}">
+            </td>
+        </tr>
+        <tr>
+            <td>User Agent name:</td>
+            <td><input name="var_3" id="var_3" value="{{ var_3 }}"></td>
+        </tr>
+        <tr>
+            <td>Max-Forwards:</td>
+            <td><input  name="var_4" id="var_4" value="{{ var_4 }}"></td>
+        </tr>
+        <tr>
+            <td>Accept incoming INFO messages:</td>
+            <td>
+                <select name="accept_info" id="accept_info" onchange="change()">
+                        <option value="enable">enable</option>
+                        <option value="disable">disable</option>
+                </select>
+            </td>
+            <td><input name="var_5" id="var_5" value="{{ var_5 }}" hidden></td>
+        </tr>
+        <tr>
+            <td>Progress (Send an "183 Session Progress" just after successfull):</td>
+            <td>
+                <select name="accept_progress" id="accept_progress" onchange="change()">
+                    <option value="enable">enable</option>
+                    <option value="disable">disable</option>
+                </select>
+            </td>
+            <td><input name="var_6" id="var_6" value="{{ var_6 }}" hidden></td>
+        </tr>
+        <tr>
+            <td>Minimum allowed expiration time in seconds:</td>
+            <td><input type="text" name="var_7" id="var_7" value="{{ var_7 }}"></td>
+        </tr>
+        <tr>
+            <td>Default expiration time if not present in REGISTER request:</td>
+            <td><input type="text" name="var_8" id="var_8" value="{{ var_8 }}"></td>
+        </tr>
+        <tr>
+            <td>Value used to limit the expiration time to something sane:</td>
+            <td><input type="text" name="var_9" id="var_9" value="{{ var_9 }}"></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="apply" id="apply" value="Apply"></td>
+        </tr>
+    </table>
+
+</form>
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+    window.onload = function loadwin()
+    {
+        if ('{{ info }}' == 'disable')
+        {
+            document.getElementById("accept_info").selectedIndex = 1;
+            document.getElementById("var_5").value = 'disable';
+        }
+        else
+        {
+              document.getElementById("accept_info").selectedIndex = 0;
+              document.getElementById("var_5").value = 'enable';
+        }
+        if ('{{ progress }}' == 'disable')
+        {
+            document.getElementById("accept_progress").selectedIndex = 1;
+            document.getElementById("var_6").value = 'disable';
+        }
+        else
+        {
+              document.getElementById("accept_progress").selectedIndex = 0;
+              document.getElementById("var_6").value = 'enable'
+        }
+        if ('{{ type }}' == 'UDP')
+        {
+            document.getElementById("listen_type").selectedIndex = 0;
+            document.getElementById("var_1").value = 'UDP'
+        }
+        else
+        {
+            document.getElementById("listen_type").selectedIndex = 1;
+            document.getElementById("var_1").value = 'TCP'
+        }
+    }
+
+    function change()
+    {
+        progress = document.getElementById("accept_progress").value;
+        info = document.getElementById("accept_info").value;
+        type = document.getElementById("listen_type").value
+        document.getElementById("var_1").value = type;
+        document.getElementById("var_5").value = info;
+        document.getElementById("var_6").value = progress;
+    }
+</script>
